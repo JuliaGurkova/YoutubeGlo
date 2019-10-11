@@ -103,11 +103,11 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
         `
         );
-      
+
         const youtuberItems = document.querySelectorAll('[data-youtuber]');
         const youTuberModal = document.querySelector('.youTuberModal');
         const youtuberContainer = document.getElementById('youtuberContainer');
-        
+
 
         const qw = [3840, 2560, 1920, 1280, 854, 640, 426, 256];
         const qh = [2160, 1440, 1080, 720, 480, 360, 240, 144];
@@ -116,11 +116,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const sizeVideo = () => {
             let ww = document.documentElement.clientWidth;
             let wh = document.documentElement.clientHeight;
-        
+
             for (let i = 0; i < qw.length; i++) {
                 if (ww > qw[i]) {
-                    youtuberContainer.querySelector('iframe').style.cssText = `
-                    width: ${qw[i]}px;
+                    youtuberContainer.querySelector('iframe').style.cssText = ` width: ${qw[i]}px;
                     height: ${qh[i]}px;
                     `;
 
@@ -129,7 +128,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     height: ${qh[i]}px;
                     top: ${(wh - qh[i]) / 2}px;
                     left: ${(ww - qw[i]) / 2}px;
-                    `;                    
+                    `;
 
                     break;
                 };
@@ -148,7 +147,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 window.addEventListener('resize', sizeVideo);
 
                 sizeVideo();
-                
+
             });
         });
 
@@ -158,20 +157,78 @@ document.addEventListener('DOMContentLoaded', () => {
             window.removeEventListener('resize', sizeVideo);
         });
 
-        //youtube
+    };
+
+    //API
+
+    {
+        const API_KEY = 'AIzaSyB0xeRxg5HkTJQ1N0FTqXqdxi4oWa7p24w';
+        const CLIENT_ID = '141455019267-6a5plrham0ikfhddj06hhemjfv1e9rga.apps.googleusercontent.com';
+
+        //authorisation
 
         {
-            const API_KEY = 'AIzaSyB0xeRxg5HkTJQ1N0FTqXqdxi4oWa7p24w';
-            const CLIENT_ID = '141455019267-6a5plrham0ikfhddj06hhemjfv1e9rga.apps.googleusercontent.com';
+
+            const buttonAuth = document.getElementById('authorize');
+            const authBlock = document.querySelector('.auth');
+
+            gapi.load("client:auth2", () => gapi.auth2.init({ client_id: CLIENT_ID }));        
+
+            const authenticate = () => gapi.auth2getAuthInstance()
+                    .signIn({ scope: "https://www.googleapis.com/auth/youtube.readonly" })
+                    .then(() => console.log("Sign-in successful"))
+                    .catch(err =>  console.error("Error signing in", err)); 
+
+            const loadClient = () => {
+                gapi.client.setApiKey(API_KEY);
+                return gapi.client.load("https://www.googleapis.com/discovery/v1/apis/youtube/v3/rest")
+                .then(() => console.log("GAPI client loaded for API"))
+                .catch(err => console.error("Error loading GAPI client for API", err));                
+            }
+
+
+
+
+
+
+
+
+            buttonAuth.addEventListener('click', () => {
+                authenticate().then(loadClient)
+
+            });
+
+
+
+        }
+
+        //request
+
+        {
+
+
+
+
+
         }
 
 
 
-
-
-
-
     };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 });
 
